@@ -130,7 +130,7 @@ html[it-header-improve-logo='true'][dark] ytd-topbar-logo-renderer path[fill='#F
 /*--------------------------------------------------------------
 # HIDE RIGHT BUTTONS
 --------------------------------------------------------------*/
-html[it-header-hide-right-buttons='true'] #masthead #container #end {visibility: hidden !important;	pointer-events: none !important;}
+html[it-header-hide-right-buttons='true'] #masthead #container #end {visibility: hidden !important; pointer-events: none !important;}
 /*--------------------------------------------------------------
 # HIDE COUNTRY CODE
 --------------------------------------------------------------*/
