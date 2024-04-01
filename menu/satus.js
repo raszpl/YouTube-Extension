@@ -777,6 +777,9 @@ satus.render = function(skeleton, container, property, childrenOnly, prepend, sk
 					set: function(val) {
 						value = val;
 
+						// 'satus_default' is a special case for default option, remove instead of storing
+						if (val == 'satus_default') {
+							satus.storage.remove(key);
 						if (skeleton.storage !== false) {
 							satus.storage.set(key, val);
 						}
