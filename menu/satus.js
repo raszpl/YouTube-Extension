@@ -1496,7 +1496,7 @@ satus.components.select = function (component, skeleton) {
 	component.appendChild(component.selectElement);
 
 	component.options = satus.isFunction(skeleton.options) ? skeleton.options() : skeleton.options || [];
-	
+
 	for (const options of component.options) {
 		const option = document.createElement('option');
 
@@ -1930,7 +1930,6 @@ satus.components.radio = function (component, skeleton) {
 /*--------------------------------------------------------------
 >>> SLIDER
 --------------------------------------------------------------*/
-
 satus.components.slider = function (component, skeleton) {
 	const content = component.createChildElement('div', 'content'),
 		childrenContainer = content.createChildElement('div', 'children-container'),
@@ -1984,6 +1983,13 @@ satus.components.slider = function (component, skeleton) {
 		const input = this.input;
 
 		this.textInput.value = input.value;
+		if (component.storage) {
+			if (component.skeleton.value == Number(input.value)) {
+				component.storage.value = 'satus_remove';
+			} else {
+				component.storage.value = Number(input.value);
+			}
+		}
 
 		if (component.storage) {
 			if (component.skeleton.value == Number(input.value)) {
@@ -2363,7 +2369,6 @@ satus.components.shortcut = function (component, skeleton) {
 /*--------------------------------------------------------------
 >>> CHECKBOX
 --------------------------------------------------------------*/
-
 satus.components.checkbox = function (component, skeleton) {
 	component.input = component.createChildElement('input');
 	component.input.type = 'checkbox';
@@ -2372,11 +2377,8 @@ satus.components.checkbox = function (component, skeleton) {
 
 	component.childrenContainer = component.createChildElement('div', 'content');
 
-	component.dataset.value = component.storage?.value || false;
-	component.input.checked = component.storage?.value || false;
-
-	component.input.addEventListener('change', function () {
-		const component = this.parentNode;
+	component.dataset.value = component.storage?.value || skeleton.value || false;
+	component.input.checked = component.storage?.value || skeleton.value || false;
 
 		if (this.checked === true) {
 			component.dataset.value = true;
@@ -2400,7 +2402,6 @@ satus.components.checkbox = function (component, skeleton) {
 /*--------------------------------------------------------------
 >>> SWITCH
 --------------------------------------------------------------*/
-
 satus.components.switch = function (component, skeleton) {
 	let value = satus.isset(component.storage.value) ? component.storage.value : skeleton.value || false;
 
@@ -2422,6 +2423,27 @@ satus.components.switch = function (component, skeleton) {
 };
 
 satus.components.switch.flip = function (val) {
+	let where = this;
+
+	function flipTrue() {
+		where.dataset.value = 'true';
+		if (where.skeleton.value == true) {
+			// skeleton.value: true makes this a default true flip switch where the only active state we save is false
+			where.storage.remove();
+		} else {
+			where.storage.value = true;
+		}
+	};
+	function flipFalse() {
+		where.dataset.value = 'false';
+		if (where.skeleton.value == true) {
+			// skeleton.value: true makes this a default true flip switch where the only active state we save is false
+			where.storage.value = false;
+		} else {
+			where.storage.remove();
+		}
+	};
+
 	switch (val) {
 		case true:
 			flipTrue();
@@ -3046,7 +3068,6 @@ satus.user.device.connection = function () {
 /*--------------------------------------------------------------
 # SEARCH
 --------------------------------------------------------------*/
-
 satus.search = function (query, object, callback) {
 	const included = ['switch', 'select', 'slider', 'shortcut', 'radio', 'color-picker', 'label', 'button'],
 		excluded = [
